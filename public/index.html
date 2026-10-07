@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>URL Shortener</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            width: 400px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        input {
+            width: 90%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        #result {
+            margin-top: 20px;
+        }
+
+        a {
+            color: #007bff;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>URL Shortener</h1>
+
+        <p>Enter your long URL</p>
+
+        <input
+            type="text"
+            id="urlInput"
+            placeholder="https://example.com"
+        >
+
+        <br>
+
+        <button onclick="shortenUrl()">
+            Shorten URL
+        </button>
+
+        <div id="result"></div>
+
+    </div>
+
+
+    <script>
+
+        async function shortenUrl() {
+
+            const url = document.getElementById("urlInput").value;
+
+            if (!url) {
+                alert("Please enter a URL");
+                return;
+            }
+
+            const response = await fetch("/api/shorten", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    url: url
+                })
+
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+
+                document.getElementById("result").innerHTML = `
+                    <p>Your shortened URL:</p>
+                    <a href="${data.shortUrl}" target="_blank">
+                        ${data.shortUrl}
+                    </a>
+                `;
+
+            } else {
+
+                document.getElementById("result").innerHTML = `
+                    <p>${data.message}</p>
+                `;
+
+            }
+
+        }
+
+    </script>
+
+</body>
+
+</html>
